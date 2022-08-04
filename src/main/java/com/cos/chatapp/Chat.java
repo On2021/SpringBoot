@@ -7,14 +7,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
 
-@Data //STS툴에 lombok 설정하는 법 (인터넷 찾아보기)
-@Document(collation = "chat")
+//STS툴에 lombok 설정하는 법 (인터넷 찾아보기)
+@Data
+@Document(collection = "chat")
 public class Chat {
 	@Id
 	private String id;
 	private String msg; //메세지
 	private String sender; //보내는 사람
-	private String reciver; //받는 사람
+	private String receiver; //받는 사람
 	
-	private LocalDateTime createdAT;
+	private LocalDateTime createdAt;
 }

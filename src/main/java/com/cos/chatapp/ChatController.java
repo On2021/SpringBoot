@@ -1,5 +1,6 @@
 package com.cos.chatapp;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.springframework.http.MediaType;
@@ -21,7 +22,7 @@ public class ChatController {
 	private final ChatRepository chatRepository;
 	
 	//SSE프로토콜 : 데이터를 요청 받으면 계속 지속적으로 데이터를 보내줄 수 있습니다. (Response선이 끊기지 않고 데이터 전송 가능) => return 타입 Flux
-	@GetMapping(value = "/sender/{sender}/receiver/{receiver}",produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+	@GetMapping(value = "/sender/{sender}/receiver/{receiver}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Chat> getMsg(@PathVariable String sender, @PathVariable String receiver) { //데이터 여러개 리턴할거면 Flux
 		return chatRepository.mFindBySender(sender, receiver)
 				.subscribeOn(Schedulers.boundedElastic());
@@ -29,7 +30,7 @@ public class ChatController {
 	
 	@PostMapping("/chat")
 	public Mono<Chat> setMsg(@RequestBody Chat chat){ //데이터 한건 리턴할거면 Mono / void 사용해도 됨 => 근데 save 데이터 잘 들어오는지 확인하고 싶어서 이렇게 작성함
-		chat.setCreatedAT(LocalDateTime.now());
+		chat.setCreatedAt(LocalDateTime.now());
 		return chatRepository.save(chat); 
 	}
 }
