@@ -22,11 +22,20 @@ public class ChatController {
 
 	private final ChatRepository chatRepository;
 	
+	//귓속말 할 때 사용하면 되요!
 	//SSE프로토콜 : 데이터를 요청 받으면 계속 지속적으로 데이터를 보내줄 수 있습니다. (Response선이 끊기지 않고 데이터 전송 가능) => return 타입 Flux
 	@CrossOrigin //js가 적용된 대로 웹페이지에서 출력되게 하고싶어용
 	@GetMapping(value = "/sender/{sender}/receiver/{receiver}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Chat> getMsg(@PathVariable String sender, @PathVariable String receiver) { //데이터 여러개 리턴할거면 Flux
 		return chatRepository.mFindBySender(sender, receiver)
+				.subscribeOn(Schedulers.boundedElastic());
+	}
+	
+	//방에서 같이 채팅, 일단 채팅 내역 모두 다 받아야함
+	@CrossOrigin
+	@GetMapping(value = "/chat/roomNum/{roomNum}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<Chat> findByRoomNum(@PathVariable Integer roomNum) { 
+		return chatRepository.mFindByRoomNum(roomNum)
 				.subscribeOn(Schedulers.boundedElastic());
 	}
 	
